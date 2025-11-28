@@ -63,3 +63,109 @@
     transform: translate(0, 0) scale(1);
   }
 }
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  /* Hide all scrollbars in print */
+  ::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    background: transparent !important;
+  }
+
+  body,
+  main,
+  .glass-card,
+  .overflow-x-auto {
+    background: white !important;
+    box-shadow: none !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    overflow: visible !important;
+    /* Ensure no scroll containers */
+  }
+
+  /* Hide sidebar and other layout elements */
+  aside,
+  nav,
+  header,
+  footer {
+    display: none !important;
+  }
+
+  /* Ensure table fits */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+
+  thead {
+    display: table-header-group !important;
+    border-bottom: 2px solid black !important;
+  }
+
+  tr {
+    page-break-inside: avoid !important;
+  }
+
+  th,
+  td {
+    border: none !important;
+    /* Removed borders as requested */
+    border-bottom: 1px solid #eee !important;
+    /* Subtle separator */
+    padding: 8px 4px !important;
+    color: black !important;
+    background: white !important;
+    font-size: 12px !important;
+    /* Default data size */
+  }
+
+  /* Remove borders from specific containers that might show up */
+  .rounded-xl,
+  .border,
+  .border-gray-100,
+  .border-gray-200 {
+    border: none !important;
+  }
+
+  /* Specific font sizes requested */
+  .print-title {
+    font-size: 14px !important;
+    font-weight: bold !important;
+  }
+
+  .print-subtitle {
+    font-size: 13px !important;
+  }
+
+  .signature-block {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    margin-top: 50px !important;
+  }
+
+  /* Reset text colors for print */
+  * {
+    color: black !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+}
+
+.print-only {
+  display: none;
+}
