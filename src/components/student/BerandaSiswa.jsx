@@ -191,7 +191,13 @@ const BerandaSiswa = ({ user, poin, level, laporan, onLogout, onEditReport, onDe
                                 <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]"></div>
                                 <span className="text-sm text-gray-700 font-bold">Bulan Ini</span>
                             </div>
-                            <span className="font-bold text-indigo-900">{Math.floor(Math.random() * 5) + 1} Buku</span>
+                            <span className="font-bold text-indigo-900">
+                                {laporan.filter(l => {
+                                    const d = new Date(l.tanggal_kirim);
+                                    const now = new Date();
+                                    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+                                }).length} Buku
+                            </span>
                         </div>
                         <div className="flex items-center justify-between p-3 bg-white/60 backdrop-blur-sm rounded-2xl border border-white/50 shadow-sm">
                             <div className="flex items-center gap-3">
