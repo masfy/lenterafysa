@@ -6,13 +6,13 @@ function setup() {
   const doc = SpreadsheetApp.getActiveSpreadsheet();
   
   // 1. Sheet Users
-  createSheetIfNotExists(doc, 'Users', ['uid', 'username', 'password', 'role', 'nama_lengkap', 'kelas', 'level', 'total_poin', 'foto_url']);
+  createSheetIfNotExists(doc, 'Users', ['uid', 'username', 'password', 'role', 'nama_lengkap', 'kelas', 'level', 'total_poin', 'foto_url', 'nip']);
   
   // 2. Sheet Laporan
   createSheetIfNotExists(doc, 'Laporan', ['report_id', 'student_uid', 'nama_siswa', 'kelas', 'judul_buku', 'kategori', 'ringkasan', 'tanggal_kirim', 'status', 'feedback_guru', 'foto_bukti']);
   
   // 3. Sheet Sekolah
-  createSheetIfNotExists(doc, 'Sekolah', ['id', 'nama', 'alamat', 'akreditasi', 'kepala_sekolah', 'tahun_ajaran']);
+  createSheetIfNotExists(doc, 'Sekolah', ['id', 'nama', 'alamat', 'akreditasi', 'kepala_sekolah', 'tahun_ajaran', 'nip_kepala_sekolah', 'kota']);
   
   // 4. Sheet Kelas
   createSheetIfNotExists(doc, 'Kelas', ['id', 'nama', 'wali_kelas', 'jumlah_siswa', 'tahun_pelajaran']);
