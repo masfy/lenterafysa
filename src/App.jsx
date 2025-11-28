@@ -397,6 +397,7 @@ export default function LenteraApp() {
         onLogout={tanganiLogout}
         currentUser={currentUser}
       >
+        <ToastNotifikasi />
         <DashboardGuru
           laporan={laporan} users={users} onVerify={tanganiVerifikasi} currentView={viewGuru} setView={setViewGuru}
           dataSekolah={dataSekolah} dataKelas={dataKelas}
@@ -419,7 +420,7 @@ export default function LenteraApp() {
       {tabSiswa === 'home' && (<BerandaSiswa user={currentUser} poin={currentUser.total_poin} level={currentUser.level} laporan={laporan.filter(r => r.student_uid === currentUser.uid)} onLogout={tanganiLogout} onEditReport={(report) => { setEditingReport(report); setTabSiswa('add'); }} onDeleteReport={tanganiHapusLaporan} triggerNotifikasi={triggerNotifikasi} />)}
       {tabSiswa === 'add' && <StudentInput onSubmit={tanganiKirimLaporan} onEdit={tanganiEditLaporan} editingReport={editingReport} onCancelEdit={() => { setEditingReport(null); setTabSiswa('home'); }} />}
       {tabSiswa === 'library' && <PustakaSiswa laporan={laporan.filter(r => r.student_uid === currentUser.uid)} />}
-      {tabSiswa === 'leaderboard' && <StudentLeaderboard users={users} currentUser={currentUser} />}
+      {tabSiswa === 'leaderboard' && <StudentLeaderboard users={users} currentUser={currentUser} dataKelas={dataKelas} />}
       {tabSiswa === 'profile' && <StudentProfile user={currentUser} onLogout={tanganiLogout} laporan={laporan.filter(r => r.student_uid === currentUser.uid)} onUpdateProfile={tanganiUpdateProfil} />}
       <div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/90 backdrop-blur-md border-t border-gray-200 px-6 py-3 pb-4 rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.05)] z-40">
         <div className="flex justify-between items-center relative z-10">
