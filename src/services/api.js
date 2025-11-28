@@ -1,6 +1,6 @@
 
 // URL Google Apps Script (Akan diisi oleh user)
-const API_URL = "https://script.google.com/macros/s/AKfycbxzTi6OY3oWgoqgEgBjLersWi22XcM_57Dd2wfc3zITHZ2mXQE62S-wPjnC5XLJ4RJ_qg/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbzqgK7ZRSvvhD-CsDhnC8CXVZDDLo_sdmYcfzip0i6tBP4a408JNkr2Hxmnw4NcqtDgIw/exec";
 
 /**
  * Fungsi helper untuk melakukan request ke Google Apps Script
@@ -63,3 +63,4 @@ export const api = {
     updateClass: (id, data) => fetchAPI('updateClass', { id, ...data }, 'POST'),
     deleteClass: (id) => fetchAPI('deleteClass', { id }, 'POST')
 };
+
