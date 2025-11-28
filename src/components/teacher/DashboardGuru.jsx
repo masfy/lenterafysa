@@ -481,13 +481,13 @@ const DashboardGuru = ({
                         <div className="absolute top-0 right-0 p-8 opacity-5">
                             <FileText size={120} className="text-violet-600" />
                         </div>
-                        <h2 className="text-3xl font-bold mb-8 flex items-center gap-3 text-gray-800 relative z-10">
+                        <h2 className="text-3xl font-bold mb-8 flex items-center gap-3 text-gray-800 relative z-10 no-print">
                             <div className="p-3 bg-violet-100 rounded-xl text-violet-600 shadow-sm">
                                 <FileText size={24} />
                             </div>
                             Rekap Laporan
                         </h2>
-                        <div className="flex flex-wrap gap-4 mb-8 items-end relative z-10">
+                        <div className="flex flex-wrap gap-4 mb-8 items-end relative z-10 no-print">
                             <div>
                                 <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">Filter Kelas</label>
                                 <select value={filterKelas} onChange={e => setFilterKelas(e.target.value)} className="p-3 border border-gray-200 rounded-xl min-w-[150px] bg-white/50 backdrop-blur-sm focus:ring-2 focus:ring-violet-200 outline-none">
@@ -515,15 +515,15 @@ const DashboardGuru = ({
                                 <button onClick={() => window.print()} className="flex items-center gap-2 px-5 py-3 bg-gray-100 text-gray-700 rounded-xl font-bold hover:bg-gray-200 transition-all shadow-sm"><Printer size={18} /> Cetak PDF</button>
                             </div>
                         </div>
-                        <div className="overflow-hidden rounded-xl border border-gray-100/50 relative z-10">
-                            <table className="w-full text-left text-sm border-collapse">
+                        <div className="overflow-x-auto rounded-xl border border-gray-100/50 relative z-10">
+                            <table className="w-full text-left text-sm border-collapse min-w-[600px]">
                                 <thead className="bg-gray-50/50 text-gray-500 uppercase tracking-wider text-xs">
                                     <tr className="border-b border-gray-100">
-                                        <th className="p-4 font-bold">Tanggal</th>
-                                        <th className="p-4 font-bold">Siswa</th>
-                                        <th className="p-4 font-bold">Kelas</th>
-                                        <th className="p-4 font-bold">Judul Buku</th>
-                                        <th className="p-4 font-bold">Status</th>
+                                        <th className="p-4 font-bold whitespace-nowrap">Tanggal</th>
+                                        <th className="p-4 font-bold whitespace-nowrap">Siswa</th>
+                                        <th className="p-4 font-bold whitespace-nowrap">Kelas</th>
+                                        <th className="p-4 font-bold whitespace-nowrap">Judul Buku</th>
+                                        <th className="p-4 font-bold whitespace-nowrap">Status</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-100/50">
@@ -531,11 +531,11 @@ const DashboardGuru = ({
                                         const student = users.find(u => u.uid === l.student_uid);
                                         return (
                                             <tr key={idx} className="hover:bg-violet-50/30 transition-colors">
-                                                <td className="p-4 text-gray-600 font-medium">{l.tanggal_kirim}</td>
-                                                <td className="p-4 font-bold text-gray-800">{student?.nama_lengkap}</td>
-                                                <td className="p-4 text-center text-gray-500">{student?.kelas}</td>
-                                                <td className="p-4 text-gray-700">{l.judul_buku}</td>
-                                                <td className="p-4">
+                                                <td className="p-4 text-gray-600 font-medium whitespace-nowrap">{l.tanggal_kirim}</td>
+                                                <td className="p-4 font-bold text-gray-800 whitespace-nowrap">{student?.nama_lengkap}</td>
+                                                <td className="p-4 text-center text-gray-500 whitespace-nowrap">{student?.kelas}</td>
+                                                <td className="p-4 text-gray-700 min-w-[200px]">{l.judul_buku}</td>
+                                                <td className="p-4 whitespace-nowrap">
                                                     <span className={`px-3 py-1 rounded-full text-xs font-bold shadow-sm ${l.status === 'Disetujui' ? 'bg-green-100 text-green-700' : l.status === 'Ditolak' ? 'bg-red-100 text-red-700' : 'bg-orange-100 text-orange-700'}`}>
                                                         {l.status}
                                                     </span>
@@ -547,6 +547,25 @@ const DashboardGuru = ({
                                     )}
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+
+                    {/* Signature Block for Print */}
+                    <div className="print-only mt-12 pt-8">
+                        <div className="flex justify-between">
+                            <div className="text-center">
+                                <p className="mb-20">Mengetahui,<br />Kepala Sekolah</p>
+                                <p className="font-bold underline">{dataSekolah.kepala_sekolah || '.........................'}</p>
+                                <p>NIP. .........................</p>
+                            </div>
+                            <div className="text-center">
+                                <p className="mb-20">
+                                    {new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}<br />
+                                    Guru Kelas
+                                </p>
+                                <p className="font-bold underline">{currentUser.nama_lengkap}</p>
+                                <p>NIP. .........................</p>
+                            </div>
                         </div>
                     </div>
                 </div>
