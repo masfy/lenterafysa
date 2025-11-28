@@ -305,14 +305,14 @@ const DashboardGuru = ({
             case 'rekap': return (
                 <div className="space-y-6 animate-fade-in">
                     <div className="glass-card rounded-2xl p-8 relative overflow-hidden">
-                        <div className="absolute top-0 right-0 p-8 opacity-5"><FileText size={120} className="text-violet-600" /></div>
+                        <div className="absolute top-0 right-0 p-8 opacity-5 no-print"><FileText size={120} className="text-violet-600" /></div>
                         <h2 className="text-3xl font-bold mb-8 flex items-center gap-3 text-gray-800 relative z-10 no-print">
                             <div className="p-3 bg-violet-100 rounded-xl text-violet-600 shadow-sm"><FileText size={24} /></div> Rekap Laporan
                         </h2>
 
-                        <div className="print-only text-center mb-8">
-                            <h1 className="text-2xl font-bold uppercase mb-2">Laporan Literasi {filterTipe}</h1>
-                            <p className="text-lg">Periode: {filterTipe === 'Bulanan' ? new Date(tahunLaporan, bulanLaporan).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' }) : tahunLaporan}</p>
+                        <div className="print-only text-center mb-8 hidden">
+                            <h1 className="text-2xl font-bold uppercase mb-2 print-title">Laporan Literasi {filterTipe}</h1>
+                            <p className="text-lg print-subtitle">Periode: {filterTipe === 'Bulanan' ? new Date(tahunLaporan, bulanLaporan).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' }) : tahunLaporan}</p>
                         </div>
 
                         <div className="flex flex-wrap gap-4 mb-8 items-end relative z-10 no-print">
@@ -342,34 +342,49 @@ const DashboardGuru = ({
                         </div>
                         <div className="overflow-x-auto rounded-xl border border-gray-100/50 relative z-10">
                             <table className="w-full text-left text-sm border-collapse min-w-[600px]">
-                                <thead className="bg-gray-50/50 text-gray-500 uppercase tracking-wider text-xs"><tr className="border-b border-gray-100"><th className="p-4">Tanggal</th><th className="p-4">Siswa</th><th className="p-4">Kelas</th><th className="p-4">Judul Buku</th><th className="p-4">Status</th></tr></thead>
+                                <thead className="bg-gray-50/50 text-gray-500 uppercase tracking-wider text-xs">
+                                    <tr className="border-b border-gray-100">
+                                        <th className="p-4 w-12">No</th>
+                                        <th className="p-4">Tanggal</th>
+                                        <th className="p-4">Siswa</th>
+                                        <th className="p-4">Kelas</th>
+                                        <th className="p-4">Judul Buku</th>
+                                        <th className="p-4">Ringkasan</th>
+                                        <th className="p-4">Status</th>
+                                    </tr>
+                                </thead>
                                 <tbody className="divide-y divide-gray-100/50">
                                     {filteredLaporan.length > 0 ? filteredLaporan.map((l, idx) => {
                                         const student = users.find(u => u.uid === l.student_uid);
+                                        const dateObj = new Date(l.tanggal_kirim);
+                                        const formattedDate = `${String(dateObj.getDate()).padStart(2, '0')}/${String(dateObj.getMonth() + 1).padStart(2, '0')}/${dateObj.getFullYear()}`;
+
                                         return (
                                             <tr key={idx} className="hover:bg-violet-50/30">
-                                                <td className="p-4 text-gray-600 font-medium whitespace-nowrap">{l.tanggal_kirim}</td>
+                                                <td className="p-4 text-gray-500 font-medium text-center">{idx + 1}</td>
+                                                <td className="p-4 text-gray-600 font-medium whitespace-nowrap">{formattedDate}</td>
                                                 <td className="p-4 font-bold text-gray-800 whitespace-nowrap">{student?.nama_lengkap}</td>
                                                 <td className="p-4 text-center text-gray-500 whitespace-nowrap">{student?.kelas}</td>
-                                                <td className="p-4 text-gray-700 min-w-[200px]">{l.judul_buku}</td>
+                                                <td className="p-4 text-gray-700 min-w-[150px] font-medium">{l.judul_buku}</td>
+                                                <td className="p-4 text-gray-600 min-w-[200px] text-xs line-clamp-2 print:line-clamp-none">{l.ringkasan}</td>
                                                 <td className="p-4 whitespace-nowrap"><span className={`px-3 py-1 rounded-full text-xs font-bold ${l.status === 'Disetujui' ? 'bg-green-100 text-green-700' : l.status === 'Ditolak' ? 'bg-red-100 text-red-700' : 'bg-orange-100 text-orange-700'}`}>{l.status}</span></td>
                                             </tr>
                                         )
-                                    }) : <tr><td colSpan="5" className="p-12 text-center text-gray-400 font-medium">Tidak ada data.</td></tr>}
+                                    }) : <tr><td colSpan="7" className="p-12 text-center text-gray-400 font-medium">Tidak ada data.</td></tr>}
                                 </tbody>
                             </table>
                         </div>
                     </div>
-                    <div className="print-only mt-12 pt-8">
+                    <div className="print-only mt-12 pt-8 signature-block">
                         <div className="flex justify-between">
                             <div className="text-center">
                                 <p className="mb-20">Mengetahui,<br />Kepala Sekolah</p>
-                                <p className="font-bold underline">{dataSekolah.kepala_sekolah || '.........................'}</p>
+                                <p className="font-bold">{dataSekolah.kepala_sekolah || '.........................'}</p>
                                 <p>NIP. {dataSekolah.nip_kepala_sekolah || '.........................'}</p>
                             </div>
                             <div className="text-center">
                                 <p className="mb-20">{dataSekolah.kota ? `${dataSekolah.kota}, ` : ''}{new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}<br />Guru</p>
-                                <p className="font-bold underline">{currentUser.nama_lengkap}</p>
+                                <p className="font-bold">{currentUser.nama_lengkap}</p>
                                 <p>NIP. {currentUser.nip || '.........................'}</p>
                             </div>
                         </div>
