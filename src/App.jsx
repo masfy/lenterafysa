@@ -61,6 +61,21 @@ export default function LenteraApp() {
     fetchData();
   }, []);
 
+  // Session Persistence
+  React.useEffect(() => {
+    const savedUser = localStorage.getItem('lentera_user');
+    if (savedUser) {
+      try {
+        const parsedUser = JSON.parse(savedUser);
+        setCurrentUser(parsedUser);
+        setPeranLogin(parsedUser.role === 'guru' ? 'guru' : 'murid');
+      } catch (e) {
+        console.error("Failed to parse saved user", e);
+        localStorage.removeItem('lentera_user');
+      }
+    }
+  }, []);
+
   const [editingReport, setEditingReport] = useState(null);
 
   const triggerNotifikasi = (msg, tipe = 'success') => { setNotifikasi(msg); setTipeNotifikasi(tipe); setTimeout(() => setNotifikasi(null), 3000); };
@@ -78,6 +93,7 @@ export default function LenteraApp() {
 
       if (user) {
         setCurrentUser(user);
+        localStorage.setItem('lentera_user', JSON.stringify(user));
         triggerNotifikasi(`Selamat datang, ${user.nama_lengkap}!`, 'success');
         setFormLogin({ username: '', password: '' });
       } else {
@@ -87,7 +103,13 @@ export default function LenteraApp() {
     }, 1000);
   };
 
-  const tanganiLogout = () => { setCurrentUser(null); setTabSiswa('home'); setViewGuru('dashboard'); setFormLogin({ username: '', password: '' }); };
+  const tanganiLogout = () => {
+    setCurrentUser(null);
+    localStorage.removeItem('lentera_user');
+    setTabSiswa('home');
+    setViewGuru('dashboard');
+    setFormLogin({ username: '', password: '' });
+  };
 
   const tanganiKirimLaporan = async (data) => {
     const laporanBaru = {
@@ -202,6 +224,7 @@ export default function LenteraApp() {
     // Optimistic Update
     const updatedUser = { ...currentUser, ...updatedData };
     setCurrentUser(updatedUser);
+    localStorage.setItem('lentera_user', JSON.stringify(updatedUser));
     setUsers(users.map(u => u.uid === currentUser.uid ? updatedUser : u));
     triggerNotifikasi("Profil berhasil diperbarui!", 'success');
 
@@ -271,6 +294,10 @@ export default function LenteraApp() {
 
   const handleUpdateUser = async (uid, updatedUser) => {
     setUsers(users.map(u => u.uid === uid ? updatedUser : u));
+    if (currentUser && currentUser.uid === uid) {
+      setCurrentUser(updatedUser);
+      localStorage.setItem('lentera_user', JSON.stringify(updatedUser));
+    }
     try {
       await api.updateUser(uid, updatedUser);
       triggerNotifikasi("Data siswa berhasil diperbarui", "success");
