@@ -14,6 +14,7 @@ import StudentInput from './components/student/StudentInput';
 import StudentProfile from './components/student/StudentProfile';
 import DashboardGuru from './components/teacher/DashboardGuru';
 import StudentLeaderboard from './components/student/StudentLeaderboard';
+import TeacherLayout from './components/teacher/TeacherLayout';
 
 import { api } from './services/api';
 
@@ -362,45 +363,26 @@ export default function LenteraApp() {
   // --- TAMPILAN GURU ---
   if (currentUser.role === 'guru') {
     return (
-      <div className="flex min-h-screen bg-gray-50 font-sans text-gray-900 overflow-hidden">
-        <ToastNotifikasi />
-        <aside className="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col sticky top-0 h-screen">
-          <div className="p-6 flex items-center gap-2 border-b border-gray-100">
-            <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white"><BookOpen size={18} /></div>
-            <span className="font-bold text-xl tracking-tight">Lentera</span>
-          </div>
-          <div className="flex-1 overflow-y-auto p-4 space-y-1">
-            <p className="px-4 text-xs font-bold text-gray-400 uppercase mb-2 mt-2">Menu Utama</p>
-            <button onClick={() => setViewGuru('dashboard')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors ${viewGuru === 'dashboard' ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:bg-gray-50'}`}> <BarChart2 size={18} /> Dashboard </button>
-            <button onClick={() => setViewGuru('verifikasi')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors ${viewGuru === 'verifikasi' ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:bg-gray-50'}`}> <CheckCircle size={18} /> Verifikasi <span className="ml-auto bg-orange-100 text-orange-600 px-2 rounded-full text-xs">{laporan.filter(r => r.status === 'Menunggu').length}</span></button>
-            <button onClick={() => setViewGuru('rekap')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors ${viewGuru === 'rekap' ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:bg-gray-50'}`}> <FileText size={18} /> Rekap Laporan </button>
-            <button onClick={() => setViewGuru('leaderboard')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors ${viewGuru === 'leaderboard' ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:bg-gray-50'}`}> <Trophy size={18} /> Leaderboard </button>
-            <p className="px-4 text-xs font-bold text-gray-400 uppercase mb-2 mt-6">Data Master</p>
-            <button onClick={() => setViewGuru('sekolah')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors ${viewGuru === 'sekolah' ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:bg-gray-50'}`}> <School size={18} /> Data Sekolah </button>
-            <button onClick={() => setViewGuru('kelas')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors ${viewGuru === 'kelas' ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:bg-gray-50'}`}> <Layout size={18} /> Data Kelas </button>
-            <button onClick={() => setViewGuru('siswa')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors ${viewGuru === 'siswa' ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:bg-gray-50'}`}> <Users size={18} /> Data Siswa </button>
-            <p className="px-4 text-xs font-bold text-gray-400 uppercase mb-2 mt-6">Pengaturan</p>
-            <button onClick={() => setViewGuru('profil')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors ${viewGuru === 'profil' ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:bg-gray-50'}`}> <Settings size={18} /> Profil Saya </button>
-          </div>
-          <div className="p-4 border-t border-gray-100">
-            <button onClick={tanganiLogout} className="w-full flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-red-50 rounded-xl font-medium transition-colors"> <LogOut size={20} /> Keluar </button>
-          </div>
-        </aside>
-        <div className="flex-1 flex flex-col h-screen overflow-hidden">
-          <DashboardGuru
-            laporan={laporan} users={users} onVerify={tanganiVerifikasi} currentView={viewGuru} setView={setViewGuru}
-            dataSekolah={dataSekolah} dataKelas={dataKelas}
-            currentUser={currentUser} setCurrentUser={setCurrentUser} triggerNotifikasi={triggerNotifikasi}
-            onUpdateSekolah={handleUpdateSekolah}
-            onAddClass={handleAddClass}
-            onUpdateClass={handleUpdateClass}
-            onDeleteClass={handleDeleteClass}
-            onAddUser={handleAddUser}
-            onUpdateUser={handleUpdateUser}
-            onDeleteUser={handleDeleteUser}
-          />
-        </div>
-      </div>
+      <TeacherLayout
+        currentView={viewGuru}
+        setView={setViewGuru}
+        laporan={laporan}
+        onLogout={tanganiLogout}
+        currentUser={currentUser}
+      >
+        <DashboardGuru
+          laporan={laporan} users={users} onVerify={tanganiVerifikasi} currentView={viewGuru} setView={setViewGuru}
+          dataSekolah={dataSekolah} dataKelas={dataKelas}
+          currentUser={currentUser} setCurrentUser={setCurrentUser} triggerNotifikasi={triggerNotifikasi}
+          onUpdateSekolah={handleUpdateSekolah}
+          onAddClass={handleAddClass}
+          onUpdateClass={handleUpdateClass}
+          onDeleteClass={handleDeleteClass}
+          onAddUser={handleAddUser}
+          onUpdateUser={handleUpdateUser}
+          onDeleteUser={handleDeleteUser}
+        />
+      </TeacherLayout>
     );
   }
   // --- TAMPILAN SISWA ---
