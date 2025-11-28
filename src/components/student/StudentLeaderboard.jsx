@@ -3,7 +3,9 @@ import { Trophy, Medal, Crown, Star, AlertCircle } from 'lucide-react';
 import StudentHeader from './StudentHeader';
 import { infoLevel } from '../../data/mockData';
 
-export default function StudentLeaderboard({ users = [], currentUser }) {
+export default function StudentLeaderboard({ users = [], currentUser, dataKelas = [] }) {
+  const [filterKelas, setFilterKelas] = React.useState('all');
+
   // Safety check
   if (!users) {
     console.error("StudentLeaderboard: users prop is missing or null");
@@ -12,7 +14,7 @@ export default function StudentLeaderboard({ users = [], currentUser }) {
 
   // Filter only students and sort by points
   const sortedUsers = users
-    .filter(u => u.role === 'murid')
+    .filter(u => u.role === 'murid' && (filterKelas === 'all' || u.kelas === filterKelas))
     .sort((a, b) => b.total_poin - a.total_poin);
 
   console.log("StudentLeaderboard: sortedUsers", sortedUsers);
@@ -42,6 +44,17 @@ export default function StudentLeaderboard({ users = [], currentUser }) {
       />
 
       <div className="p-6 animate-fade-in">
+        <div className="mb-6 flex justify-end">
+          <select
+            value={filterKelas}
+            onChange={(e) => setFilterKelas(e.target.value)}
+            className="p-2.5 bg-white border border-gray-200 rounded-xl text-sm font-bold text-gray-600 outline-none focus:ring-2 focus:ring-indigo-200 shadow-sm"
+          >
+            <option value="all">Semua Kelas</option>
+            {dataKelas.map(k => <option key={k.id} value={k.nama}>{k.nama}</option>)}
+          </select>
+        </div>
+
         {sortedUsers.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-4">
@@ -57,13 +70,15 @@ export default function StudentLeaderboard({ users = [], currentUser }) {
               {/* 2nd Place */}
               {topThree[1] ? (
                 <div className="flex flex-col items-center w-1/3 group">
-                  <div className="w-16 h-16 rounded-full border-4 border-gray-300 overflow-hidden shadow-lg mb-2 relative ring-4 ring-gray-50 group-hover:scale-105 transition-transform">
-                    <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${topThree[1].username}`} alt={topThree[1].nama_lengkap} />
-                    <div className="absolute bottom-0 right-0 bg-gray-500 text-white text-xs font-bold px-2 py-0.5 rounded-full border-2 border-white">2</div>
+                  <div className="w-16 h-16 rounded-full border-4 border-gray-300 overflow-hidden shadow-lg mb-2 relative ring-4 ring-gray-50 group-hover:scale-105 transition-transform z-10">
+                    <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${topThree[1].username}&mouth=smile&eyebrows=default&eyes=happy`} alt={topThree[1].nama_lengkap} className="w-full h-full object-cover" />
+                    <div className="absolute bottom-0 right-0 bg-gray-500 text-white text-xs font-bold px-2 py-0.5 rounded-full border-2 border-white z-20">2</div>
                   </div>
                   <p className="font-bold text-sm text-center line-clamp-1 text-gray-800">{topThree[1].nama_lengkap}</p>
                   <p className="text-xs text-gray-500 font-bold bg-gray-100 px-2 py-0.5 rounded-full mt-1">{topThree[1].total_poin} Poin</p>
-                  <div className="h-24 w-full bg-gradient-to-t from-gray-300 to-gray-100 rounded-t-2xl mt-2 shadow-inner opacity-80"></div>
+                  <div className="h-24 w-full bg-gradient-to-t from-gray-300 to-gray-100 rounded-t-2xl mt-2 shadow-inner opacity-80 relative flex justify-center pt-2">
+                    <span className="text-4xl font-black text-gray-400/30">2</span>
+                  </div>
                 </div>
               ) : <div className="w-1/3"></div>}
 
@@ -71,13 +86,14 @@ export default function StudentLeaderboard({ users = [], currentUser }) {
               {topThree[0] ? (
                 <div className="flex flex-col items-center w-1/3 -mt-8 z-10 group">
                   <div className="absolute -mt-12 animate-bounce-slow">{getRankIcon(0)}</div>
-                  <div className="w-24 h-24 rounded-full border-4 border-yellow-400 overflow-hidden shadow-xl mb-2 relative ring-4 ring-yellow-100 group-hover:scale-105 transition-transform">
-                    <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${topThree[0].username}`} alt={topThree[0].nama_lengkap} />
-                    <div className="absolute bottom-0 right-0 bg-yellow-500 text-white text-sm font-bold px-2.5 py-0.5 rounded-full border-2 border-white">1</div>
+                  <div className="w-24 h-24 rounded-full border-4 border-yellow-400 overflow-hidden shadow-xl mb-2 relative ring-4 ring-yellow-100 group-hover:scale-105 transition-transform z-10">
+                    <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${topThree[0].username}&mouth=smile&eyebrows=default&eyes=happy`} alt={topThree[0].nama_lengkap} className="w-full h-full object-cover" />
+                    <div className="absolute bottom-0 right-0 bg-yellow-500 text-white text-sm font-bold px-2.5 py-0.5 rounded-full border-2 border-white z-20">1</div>
                   </div>
                   <p className="font-bold text-base text-center line-clamp-1 text-indigo-900">{topThree[0].nama_lengkap}</p>
                   <p className="text-xs text-yellow-700 font-bold bg-yellow-100 px-3 py-0.5 rounded-full mt-1">{topThree[0].total_poin} Poin</p>
-                  <div className="h-36 w-full bg-gradient-to-t from-yellow-300 to-yellow-100 rounded-t-2xl mt-2 shadow-lg relative overflow-hidden">
+                  <div className="h-36 w-full bg-gradient-to-t from-yellow-300 to-yellow-100 rounded-t-2xl mt-2 shadow-lg relative overflow-hidden flex justify-center pt-4">
+                    <span className="text-6xl font-black text-yellow-500/20 relative z-10">1</span>
                     <div className="absolute inset-0 bg-white/30 skew-y-12 transform translate-y-10"></div>
                     <div className="absolute bottom-2 left-0 right-0 text-center">
                       <Star className="w-6 h-6 text-yellow-500 fill-current inline-block animate-pulse" />
@@ -89,13 +105,15 @@ export default function StudentLeaderboard({ users = [], currentUser }) {
               {/* 3rd Place */}
               {topThree[2] ? (
                 <div className="flex flex-col items-center w-1/3 group">
-                  <div className="w-16 h-16 rounded-full border-4 border-orange-300 overflow-hidden shadow-lg mb-2 relative ring-4 ring-orange-50 group-hover:scale-105 transition-transform">
-                    <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${topThree[2].username}`} alt={topThree[2].nama_lengkap} />
-                    <div className="absolute bottom-0 right-0 bg-orange-500 text-white text-xs font-bold px-2 py-0.5 rounded-full border-2 border-white">3</div>
+                  <div className="w-16 h-16 rounded-full border-4 border-orange-300 overflow-hidden shadow-lg mb-2 relative ring-4 ring-orange-50 group-hover:scale-105 transition-transform z-10">
+                    <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${topThree[2].username}&mouth=smile&eyebrows=default&eyes=happy`} alt={topThree[2].nama_lengkap} className="w-full h-full object-cover" />
+                    <div className="absolute bottom-0 right-0 bg-orange-500 text-white text-xs font-bold px-2 py-0.5 rounded-full border-2 border-white z-20">3</div>
                   </div>
                   <p className="font-bold text-sm text-center line-clamp-1 text-gray-800">{topThree[2].nama_lengkap}</p>
                   <p className="text-xs text-orange-600 font-bold bg-orange-100 px-2 py-0.5 rounded-full mt-1">{topThree[2].total_poin} Poin</p>
-                  <div className="h-20 w-full bg-gradient-to-t from-orange-300 to-orange-100 rounded-t-2xl mt-2 shadow-inner opacity-80"></div>
+                  <div className="h-20 w-full bg-gradient-to-t from-orange-300 to-orange-100 rounded-t-2xl mt-2 shadow-inner opacity-80 relative flex justify-center pt-2">
+                    <span className="text-4xl font-black text-orange-400/30">3</span>
+                  </div>
                 </div>
               ) : <div className="w-1/3"></div>}
             </div>
@@ -109,7 +127,7 @@ export default function StudentLeaderboard({ users = [], currentUser }) {
                     {index < 3 ? <Trophy size={20} className="mx-auto" /> : `#${index + 1}`}
                   </div>
                   <div className="w-12 h-12 rounded-full bg-gray-200 overflow-hidden border-2 border-white shadow-sm">
-                    <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.username}`} alt={user.nama_lengkap} />
+                    <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.username}&mouth=smile&eyebrows=default&eyes=happy`} alt={user.nama_lengkap} className="w-full h-full object-cover" />
                   </div>
                   <div className="flex-1">
                     <h4 className={`font-bold text-base ${user.uid === currentUser?.uid ? 'text-indigo-900' : 'text-gray-800'}`}>{user.nama_lengkap}</h4>
