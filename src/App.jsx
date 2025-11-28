@@ -363,7 +363,7 @@ export default function LenteraApp() {
                 </div>
                 <div>
                   <p className={`text-sm font-bold ${peranLogin === 'murid' ? 'text-indigo-900' : 'text-purple-900'}`}>Login {peranLogin === 'murid' ? 'Siswa' : 'Guru'}</p>
-                  <p className={`text-xs ${peranLogin === 'murid' ? 'text-indigo-700' : 'text-purple-700'}`}>{peranLogin === 'murid' ? 'Gunakan akun dari Data Guru' : 'Gunakan username: guru1'}</p>
+                  <p className={`text-xs ${peranLogin === 'murid' ? 'text-indigo-700' : 'text-purple-700'}`}>{peranLogin === 'murid' ? 'Gunakan akun dari Data Guru' : 'Silakan login untuk melanjutkan dan mengelola aktivitas siswa.'}</p>
                 </div>
               </div>
               <div className="space-y-4">
