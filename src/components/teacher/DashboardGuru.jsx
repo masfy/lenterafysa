@@ -1,8 +1,9 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import {
-    School, Layout, Edit, Save, PlusCircle, Trash2, Users, FileText,
-    Download, Printer, User, Camera, Lock, CheckCircle, XCircle,
-    BarChart2, AlertCircle, BookOpen, Trophy
+    Layout, Users, FileText, CheckCircle, XCircle, LogOut, ChevronRight,
+    School, MapPin, User, Award, Calendar, Edit, Trash2, Download, Printer,
+    Search, Filter, Plus, Save, X, Camera, Lock, Trophy, Medal, Crown, Star, AlertCircle, BookOpen
 } from 'lucide-react';
 import { SimpleBarChart, SimpleLineChart } from '../common/Charts';
 import ModalKonfirmasi from '../common/ModalKonfirmasi';
@@ -16,11 +17,25 @@ const DashboardGuru = ({
     onUpdateSekolah, onAddClass, onUpdateClass, onDeleteClass,
     onAddUser, onUpdateUser, onDeleteUser
 }) => {
+    // Static Color Definitions for Tailwind
+    const THEME_COLORS = {
+        blue: { bg: 'bg-blue-100', text: 'text-blue-600', soft: 'bg-blue-50', hover: 'hover:bg-blue-100', dark: 'text-blue-700', border: 'border-blue-100', icon: 'bg-blue-200' },
+        green: { bg: 'bg-green-100', text: 'text-green-600', soft: 'bg-green-50', hover: 'hover:bg-green-100', dark: 'text-green-700', border: 'border-green-100', icon: 'bg-green-200' },
+        orange: { bg: 'bg-orange-100', text: 'text-orange-600', soft: 'bg-orange-50', hover: 'hover:bg-orange-100', dark: 'text-orange-700', border: 'border-orange-100', icon: 'bg-orange-200' },
+        purple: { bg: 'bg-purple-100', text: 'text-purple-600', soft: 'bg-purple-50', hover: 'hover:bg-purple-100', dark: 'text-purple-700', border: 'border-purple-100', icon: 'bg-purple-200' },
+        emerald: { bg: 'bg-emerald-100', text: 'text-emerald-600', soft: 'bg-emerald-50', hover: 'hover:bg-emerald-100', dark: 'text-emerald-700', border: 'border-emerald-100', icon: 'bg-emerald-200' },
+        violet: { bg: 'bg-violet-100', text: 'text-violet-600', soft: 'bg-violet-50', hover: 'hover:bg-violet-100', dark: 'text-violet-700', border: 'border-violet-100', icon: 'bg-violet-200' },
+        amber: { bg: 'bg-amber-100', text: 'text-amber-600', soft: 'bg-amber-50', hover: 'hover:bg-amber-100', dark: 'text-amber-700', border: 'border-amber-100', icon: 'bg-amber-200' },
+        rose: { bg: 'bg-rose-100', text: 'text-rose-600', soft: 'bg-rose-50', hover: 'hover:bg-rose-100', dark: 'text-rose-700', border: 'border-rose-100', icon: 'bg-rose-200' },
+        cyan: { bg: 'bg-cyan-100', text: 'text-cyan-600', soft: 'bg-cyan-50', hover: 'hover:bg-cyan-100', dark: 'text-cyan-700', border: 'border-cyan-100', icon: 'bg-cyan-200' },
+        gray: { bg: 'bg-gray-100', text: 'text-gray-600', soft: 'bg-gray-50', hover: 'hover:bg-gray-100', dark: 'text-gray-700', border: 'border-gray-200', icon: 'bg-gray-200' },
+    };
+
     const [editingId, setEditingId] = useState(null);
     const [filterBulan, setFilterBulan] = useState('all');
     const [filterTahun, setFilterTahun] = useState('all');
     const [filterKelas, setFilterKelas] = useState('all');
-    
+
     // New State for Print
     const [filterTipe, setFilterTipe] = useState('Bulanan');
     const [bulanLaporan, setBulanLaporan] = useState(new Date().getMonth());
@@ -39,6 +54,7 @@ const DashboardGuru = ({
     const [rejectingId, setRejectingId] = useState(null);
     const [rejectionNote, setRejectionNote] = useState('');
     const [filterKelasSiswa, setFilterKelasSiswa] = useState('all');
+    const [filterKelasLeaderboard, setFilterKelasLeaderboard] = useState('all');
 
     useEffect(() => {
         if (editingId) {
@@ -85,10 +101,10 @@ const DashboardGuru = ({
     const handleUpdateProfilGuru = (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
-        const updatedGuru = { 
-            ...currentUser, 
-            nama_lengkap: formData.get('nama'), 
-            username: formData.get('username'), 
+        const updatedGuru = {
+            ...currentUser,
+            nama_lengkap: formData.get('nama'),
+            username: formData.get('username'),
             password: formData.get('password'),
             nip: formData.get('nip')
         };
@@ -113,7 +129,7 @@ const DashboardGuru = ({
     const filteredLaporan = laporan.filter(l => {
         const matchKelas = filterKelas === 'all' || users.find(u => u.uid === l.student_uid)?.kelas === filterKelas;
         const d = new Date(l.tanggal_kirim);
-        const matchWaktu = filterTipe === 'Bulanan' 
+        const matchWaktu = filterTipe === 'Bulanan'
             ? d.getMonth() === parseInt(bulanLaporan) && d.getFullYear() === parseInt(tahunLaporan)
             : d.getFullYear() === parseInt(tahunLaporan);
         return matchKelas && matchWaktu;
@@ -172,14 +188,31 @@ const DashboardGuru = ({
                             <div className="flex gap-3 pt-4"><button className="bg-rose-600 text-white px-6 py-2.5 rounded-xl font-bold">Simpan</button><button type="button" onClick={() => setEditingId(null)} className="bg-gray-100 text-gray-600 px-6 py-2.5 rounded-xl font-bold">Batal</button></div>
                         </form>
                     ) : (
+
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 relative z-10">
-                            <div className="p-4 bg-white/40 rounded-xl border border-white/60"><label className="text-xs font-bold text-gray-500 uppercase">Nama Sekolah</label><p className="font-bold text-xl">{dataSekolah.nama}</p></div>
-                            <div className="p-4 bg-white/40 rounded-xl border border-white/60"><label className="text-xs font-bold text-gray-500 uppercase">Alamat</label><p className="font-medium">{dataSekolah.alamat}</p></div>
-                            <div className="p-4 bg-white/40 rounded-xl border border-white/60"><label className="text-xs font-bold text-gray-500 uppercase">Kepala Sekolah</label><p className="font-medium">{dataSekolah.kepala_sekolah}</p><p className="text-xs text-gray-500">NIP: {dataSekolah.nip_kepala_sekolah || '-'}</p></div>
-                            <div className="p-4 bg-white/40 rounded-xl border border-white/60"><label className="text-xs font-bold text-gray-500 uppercase">Kota</label><p className="font-medium">{dataSekolah.kota || '-'}</p></div>
-                        </div>
+                            <div className="p-6 bg-white/40 rounded-2xl border border-white/60 hover:shadow-lg transition-all flex items-start gap-4 group">
+                                <div className="p-3 bg-rose-100 text-rose-600 rounded-xl group-hover:scale-110 transition-transform"><School size={24} /></div>
+                                <div><label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Nama Sekolah</label><p className="font-bold text-xl text-gray-800">{dataSekolah.nama}</p></div>
+                            </div >
+                            <div className="p-6 bg-white/40 rounded-2xl border border-white/60 hover:shadow-lg transition-all flex items-start gap-4 group">
+                                <div className="p-3 bg-orange-100 text-orange-600 rounded-xl group-hover:scale-110 transition-transform"><MapPin size={24} /></div>
+                                <div><label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Alamat & Kota</label><p className="font-medium text-gray-800">{dataSekolah.alamat}</p><p className="text-sm text-gray-500">{dataSekolah.kota || '-'}</p></div>
+                            </div>
+                            <div className="p-6 bg-white/40 rounded-2xl border border-white/60 hover:shadow-lg transition-all flex items-start gap-4 group">
+                                <div className="p-3 bg-indigo-100 text-indigo-600 rounded-xl group-hover:scale-110 transition-transform"><User size={24} /></div>
+                                <div><label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Kepala Sekolah</label><p className="font-medium text-gray-800">{dataSekolah.kepala_sekolah}</p><p className="text-xs text-gray-500 font-mono mt-1">NIP: {dataSekolah.nip_kepala_sekolah || '-'}</p></div>
+                            </div>
+                            <div className="p-6 bg-white/40 rounded-2xl border border-white/60 hover:shadow-lg transition-all flex items-start gap-4 group">
+                                <div className="p-3 bg-emerald-100 text-emerald-600 rounded-xl group-hover:scale-110 transition-transform"><Award size={24} /></div>
+                                <div><label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Akreditasi</label><p className="font-bold text-xl text-gray-800">{dataSekolah.akreditasi || '-'}</p></div>
+                            </div>
+                            <div className="p-6 bg-white/40 rounded-2xl border border-white/60 hover:shadow-lg transition-all flex items-start gap-4 group">
+                                <div className="p-3 bg-blue-100 text-blue-600 rounded-xl group-hover:scale-110 transition-transform"><Calendar size={24} /></div>
+                                <div><label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Tahun Pelajaran</label><p className="font-bold text-xl text-gray-800">{dataSekolah.tahun_ajaran || '-'}</p></div>
+                            </div>
+                        </div >
                     )}
-                </div>
+                </div >
             );
             case 'kelas': return (
                 <div className="glass-card rounded-2xl p-8 animate-fade-in relative overflow-hidden">
@@ -192,16 +225,39 @@ const DashboardGuru = ({
                         {editingId?.startsWith('K') && <button type="button" onClick={() => setEditingId(null)} className="bg-gray-100 text-gray-600 px-6 py-3 rounded-xl font-bold">Batal</button>}
                     </form>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
-                        {dataKelas.map((kelas, index) => (
-                            <div key={kelas.id} className="p-6 rounded-2xl border bg-cyan-50 hover:shadow-lg transition-all relative group">
-                                <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                                    <button onClick={() => { setEditingId(kelas.id); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="p-2 bg-white/80 text-blue-600 rounded-lg"><Edit size={16} /></button>
-                                    <button onClick={() => { setItemToDelete({ type: 'kelas', id: kelas.id }); setIsModalOpen(true); }} className="p-2 bg-white/80 text-red-600 rounded-lg"><Trash2 size={16} /></button>
+                        {dataKelas.map((kelas, index) => {
+                            const colors = ['cyan', 'rose', 'amber', 'emerald', 'violet', 'blue'];
+                            const theme = THEME_COLORS[colors[index % colors.length]];
+                            return (
+                                <div key={kelas.id} className={`p-5 rounded-3xl bg-white/40 backdrop-blur-xl border border-white/60 hover:shadow-2xl hover:shadow-${theme.text}/20 transition-all duration-500 relative group overflow-hidden`}>
+                                    <div className={`absolute inset-0 bg-gradient-to-br ${theme.bg} to-transparent opacity-30 group-hover:opacity-50 transition-opacity duration-500`}></div>
+                                    <div className={`absolute -right-12 -top-12 w-32 h-32 ${theme.bg} rounded-full blur-3xl opacity-40 group-hover:scale-150 transition-transform duration-700`}></div>
+
+                                    <div className="flex justify-between items-start mb-4 relative z-10">
+                                        <div className={`p-3 bg-white/80 backdrop-blur-md rounded-2xl shadow-sm ${theme.text} group-hover:scale-110 transition-transform duration-300`}><Layout size={24} /></div>
+                                        <div className="text-center">
+                                            <span className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] block mb-1">KELAS</span>
+                                            <h3 className={`text-4xl font-black ${theme.dark} tracking-tight drop-shadow-sm`}>{kelas.nama}</h3>
+                                        </div>
+                                        <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                                            <button onClick={() => { setEditingId(kelas.id); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="p-2 bg-white text-blue-600 rounded-xl shadow-sm hover:bg-blue-50 hover:scale-110 transition-all"><Edit size={16} /></button>
+                                            <button onClick={() => { setItemToDelete({ type: 'kelas', id: kelas.id }); setIsModalOpen(true); }} className="p-2 bg-white text-red-600 rounded-xl shadow-sm hover:bg-red-50 hover:scale-110 transition-all"><Trash2 size={16} /></button>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2 relative z-10">
+                                        <div className="flex items-center justify-between p-3 bg-white/60 backdrop-blur-sm rounded-2xl border border-white/50 shadow-sm hover:bg-white/80 transition-colors">
+                                            <div className="flex items-center gap-2 text-gray-600 font-bold text-sm"><Users size={16} className={`${theme.text}`} /> Siswa</div>
+                                            <span className={`h-7 px-3 flex items-center justify-center rounded-full font-bold text-xs ${theme.bg} ${theme.dark} shadow-inner`}>{users.filter(u => u.role === 'murid' && u.kelas === kelas.nama).length}</span>
+                                        </div>
+                                        <div className="flex items-center justify-between p-3 bg-white/60 backdrop-blur-sm rounded-2xl border border-white/50 shadow-sm hover:bg-white/80 transition-colors">
+                                            <div className="flex items-center gap-2 text-gray-600 font-bold text-sm"><BookOpen size={16} className={`${theme.text}`} /> Tahun</div>
+                                            <span className="font-bold text-gray-800 font-mono text-sm">{kelas.tahun_pelajaran || '-'}</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <h3 className="text-3xl font-extrabold text-cyan-700 mb-2">{kelas.nama}</h3>
-                                <p className="text-sm text-gray-600">Total Siswa: {users.filter(u => u.role === 'murid' && u.kelas === kelas.nama).length}</p>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </div>
             );
@@ -253,7 +309,7 @@ const DashboardGuru = ({
                         <h2 className="text-3xl font-bold mb-8 flex items-center gap-3 text-gray-800 relative z-10 no-print">
                             <div className="p-3 bg-violet-100 rounded-xl text-violet-600 shadow-sm"><FileText size={24} /></div> Rekap Laporan
                         </h2>
-                        
+
                         <div className="print-only text-center mb-8">
                             <h1 className="text-2xl font-bold uppercase mb-2">Laporan Literasi {filterTipe}</h1>
                             <p className="text-lg">Periode: {filterTipe === 'Bulanan' ? new Date(tahunLaporan, bulanLaporan).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' }) : tahunLaporan}</p>
@@ -307,12 +363,12 @@ const DashboardGuru = ({
                     <div className="print-only mt-12 pt-8">
                         <div className="flex justify-between">
                             <div className="text-center">
-                                <p className="mb-20">Mengetahui,<br/>Kepala Sekolah</p>
+                                <p className="mb-20">Mengetahui,<br />Kepala Sekolah</p>
                                 <p className="font-bold underline">{dataSekolah.kepala_sekolah || '.........................'}</p>
                                 <p>NIP. {dataSekolah.nip_kepala_sekolah || '.........................'}</p>
                             </div>
                             <div className="text-center">
-                                <p className="mb-20">{dataSekolah.kota ? `${dataSekolah.kota}, ` : ''}{new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}<br/>Guru</p>
+                                <p className="mb-20">{dataSekolah.kota ? `${dataSekolah.kota}, ` : ''}{new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}<br />Guru</p>
                                 <p className="font-bold underline">{currentUser.nama_lengkap}</p>
                                 <p>NIP. {currentUser.nip || '.........................'}</p>
                             </div>
@@ -320,22 +376,130 @@ const DashboardGuru = ({
                     </div>
                 </div>
             );
-            case 'leaderboard': return (
-                <div className="glass-card rounded-2xl p-8 animate-fade-in relative overflow-hidden">
-                    <div className="absolute top-0 right-0 p-8 opacity-5"><Trophy size={120} className="text-amber-600" /></div>
-                    <h2 className="text-3xl font-bold mb-8 flex items-center gap-3 text-gray-800 relative z-10"><div className="p-3 bg-amber-100 rounded-xl text-amber-600 shadow-sm"><Trophy size={24} /></div> Peringkat Sekolah</h2>
-                    <div className="space-y-4 relative z-10">
-                        {users.filter(u => u.role === 'murid').sort((a, b) => b.total_poin - a.total_poin).map((u, i) => (
-                            <div key={u.uid} className="flex items-center p-4 rounded-2xl hover:shadow-lg transition-all border bg-white/50">
-                                <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl mr-6 shadow-sm ${i < 3 ? 'bg-amber-100 text-amber-600' : 'bg-gray-100 text-gray-600'}`}>{i + 1}</div>
-                                <div className="w-12 h-12 rounded-full bg-gray-100 mr-4 overflow-hidden border-2 border-white shadow-sm"><img src={u.foto_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${u.username}`} alt="avatar" /></div>
-                                <div className="flex-1"><h4 className="font-bold text-lg text-gray-800">{u.nama_lengkap}</h4><p className="text-sm text-gray-500 font-medium">Kelas {u.kelas}</p></div>
-                                <div className="text-right"><span className="block font-extrabold text-2xl text-amber-600">{u.total_poin}</span><span className="text-xs text-gray-400 font-bold uppercase tracking-wider">Poin</span></div>
-                            </div>
-                        ))}
+            case 'leaderboard':
+                const filteredUsers = users.filter(u => u.role === 'murid' && (filterKelasLeaderboard === 'all' || u.kelas === filterKelasLeaderboard))
+                    .sort((a, b) => b.total_poin - a.total_poin);
+                const topThree = filteredUsers.slice(0, 3);
+                const restUsers = filteredUsers.slice(3);
+
+                const getRankIcon = (index) => {
+                    switch (index) {
+                        case 0: return <Crown className="text-yellow-500 fill-current animate-bounce-slow" size={32} />;
+                        case 1: return <Medal className="text-gray-400 fill-current" size={28} />;
+                        case 2: return <Medal className="text-orange-400 fill-current" size={28} />;
+                        default: return <span className="font-bold text-gray-500">#{index + 1}</span>;
+                    }
+                };
+
+                return (
+                    <div className="glass-card rounded-2xl p-8 animate-fade-in relative overflow-hidden">
+                        <div className="absolute top-0 right-0 p-8 opacity-5"><Trophy size={120} className="text-amber-600" /></div>
+                        <div className="flex justify-between items-center mb-8 relative z-10">
+                            <h2 className="text-3xl font-bold flex items-center gap-3 text-gray-800">
+                                <div className="p-3 bg-amber-100 rounded-xl text-amber-600 shadow-sm"><Trophy size={24} /></div> Hall of Fame
+                            </h2>
+                            <select value={filterKelasLeaderboard} onChange={e => setFilterKelasLeaderboard(e.target.value)} className="p-2.5 border border-gray-200 rounded-xl text-sm font-bold text-gray-600 outline-none focus:ring-2 focus:ring-amber-200 bg-white/50 backdrop-blur-sm">
+                                <option value="all">Semua Kelas</option>
+                                {dataKelas.map(k => <option key={k.id} value={k.nama}>{k.nama}</option>)}
+                            </select>
+                        </div>
+
+                        <div className="relative z-10">
+                            {filteredUsers.length === 0 ? (
+                                <div className="flex flex-col items-center justify-center py-20 text-center">
+                                    <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                                        <AlertCircle className="text-gray-400" size={40} />
+                                    </div>
+                                    <h3 className="text-lg font-bold text-gray-700">Belum Ada Data</h3>
+                                    <p className="text-gray-500 max-w-xs mx-auto">Belum ada siswa yang masuk dalam papan peringkat saat ini.</p>
+                                </div>
+                            ) : (
+                                <>
+                                    {/* Top 3 Podium */}
+                                    <div className="flex justify-center items-end gap-3 mb-12 mt-6 min-h-[220px]">
+                                        {/* 2nd Place */}
+                                        {topThree[1] ? (
+                                            <div className="flex flex-col items-center w-1/3 group">
+                                                <div className="w-20 h-20 rounded-full border-4 border-gray-300 overflow-hidden shadow-lg mb-2 relative ring-4 ring-gray-50 group-hover:scale-105 transition-transform z-10">
+                                                    <img src={topThree[1].foto_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${topThree[1].username}&mouth=smile&eyebrows=default&eyes=happy`} alt={topThree[1].nama_lengkap} className="w-full h-full object-cover" />
+                                                    <div className="absolute bottom-0 right-0 bg-gray-500 text-white text-xs font-bold px-2 py-0.5 rounded-full border-2 border-white z-20">2</div>
+                                                </div>
+                                                <p className="font-bold text-sm text-center line-clamp-1 text-gray-800">{topThree[1].nama_lengkap}</p>
+                                                <p className="text-xs text-gray-500 font-bold bg-gray-100 px-2 py-0.5 rounded-full mt-1">{topThree[1].total_poin} Poin</p>
+                                                <div className="h-24 w-full bg-gradient-to-t from-gray-300 to-gray-100 rounded-t-2xl mt-2 shadow-inner opacity-80 relative flex justify-center pt-2">
+                                                    <span className="text-4xl font-black text-gray-400/30">2</span>
+                                                </div>
+                                            </div>
+                                        ) : <div className="w-1/3"></div>}
+
+                                        {/* 1st Place */}
+                                        {topThree[0] ? (
+                                            <div className="flex flex-col items-center w-1/3 -mt-8 z-10 group">
+                                                <div className="absolute -mt-14 animate-bounce-slow">{getRankIcon(0)}</div>
+                                                <div className="w-28 h-28 rounded-full border-4 border-yellow-400 overflow-hidden shadow-xl mb-2 relative ring-4 ring-yellow-100 group-hover:scale-105 transition-transform z-10">
+                                                    <img src={topThree[0].foto_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${topThree[0].username}&mouth=smile&eyebrows=default&eyes=happy`} alt={topThree[0].nama_lengkap} className="w-full h-full object-cover" />
+                                                    <div className="absolute bottom-0 right-0 bg-yellow-500 text-white text-sm font-bold px-2.5 py-0.5 rounded-full border-2 border-white z-20">1</div>
+                                                </div>
+                                                <p className="font-bold text-base text-center line-clamp-1 text-indigo-900">{topThree[0].nama_lengkap}</p>
+                                                <p className="text-xs text-yellow-700 font-bold bg-yellow-100 px-3 py-0.5 rounded-full mt-1">{topThree[0].total_poin} Poin</p>
+                                                <div className="h-40 w-full bg-gradient-to-t from-yellow-300 to-yellow-100 rounded-t-2xl mt-2 shadow-lg relative overflow-hidden flex justify-center pt-4">
+                                                    <span className="text-6xl font-black text-yellow-500/20 relative z-10">1</span>
+                                                    <div className="absolute inset-0 bg-white/30 skew-y-12 transform translate-y-10"></div>
+                                                    <div className="absolute bottom-4 left-0 right-0 text-center">
+                                                        <Star className="w-8 h-8 text-yellow-500 fill-current inline-block animate-pulse" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ) : <div className="w-1/3"></div>}
+
+                                        {/* 3rd Place */}
+                                        {topThree[2] ? (
+                                            <div className="flex flex-col items-center w-1/3 group">
+                                                <div className="w-20 h-20 rounded-full border-4 border-orange-300 overflow-hidden shadow-lg mb-2 relative ring-4 ring-orange-50 group-hover:scale-105 transition-transform z-10">
+                                                    <img src={topThree[2].foto_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${topThree[2].username}&mouth=smile&eyebrows=default&eyes=happy`} alt={topThree[2].nama_lengkap} className="w-full h-full object-cover" />
+                                                    <div className="absolute bottom-0 right-0 bg-orange-500 text-white text-xs font-bold px-2 py-0.5 rounded-full border-2 border-white z-20">3</div>
+                                                </div>
+                                                <p className="font-bold text-sm text-center line-clamp-1 text-gray-800">{topThree[2].nama_lengkap}</p>
+                                                <p className="text-xs text-orange-600 font-bold bg-orange-100 px-2 py-0.5 rounded-full mt-1">{topThree[2].total_poin} Poin</p>
+                                                <div className="h-20 w-full bg-gradient-to-t from-orange-300 to-orange-100 rounded-t-2xl mt-2 shadow-inner opacity-80 relative flex justify-center pt-2">
+                                                    <span className="text-4xl font-black text-orange-400/30">3</span>
+                                                </div>
+                                            </div>
+                                        ) : <div className="w-1/3"></div>}
+                                    </div>
+
+                                    {/* Full List */}
+                                    <div className="space-y-3">
+                                        <h3 className="font-bold text-gray-700 mb-4 px-2">Peringkat Keseluruhan</h3>
+                                        {filteredUsers.map((u, index) => {
+                                            const isTop3 = index < 3;
+                                            const theme = isTop3 ? { bg: 'bg-yellow-50', border: 'border-yellow-200' } : { bg: 'bg-white', border: 'border-gray-100' };
+
+                                            return (
+                                                <div key={u.uid} className={`flex items-center gap-4 p-4 rounded-2xl border transition-all duration-300 hover:scale-[1.01] hover:shadow-md ${theme.bg} ${theme.border}`}>
+                                                    <div className={`font-bold w-8 text-center text-lg ${index < 3 ? 'text-yellow-500' : 'text-gray-400 italic'}`}>
+                                                        {index < 3 ? <Trophy size={20} className="mx-auto" /> : `#${index + 1}`}
+                                                    </div>
+                                                    <div className="w-12 h-12 rounded-full bg-gray-200 overflow-hidden border-2 border-white shadow-sm">
+                                                        <img src={u.foto_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${u.username}&mouth=smile&eyebrows=default&eyes=happy`} alt={u.nama_lengkap} className="w-full h-full object-cover" />
+                                                    </div>
+                                                    <div className="flex-1">
+                                                        <h4 className="font-bold text-base text-gray-800">{u.nama_lengkap}</h4>
+                                                        <div className="flex items-center gap-2 mt-0.5">
+                                                            <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded">Kelas {u.kelas}</span>
+                                                            <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
+                                                            <span className="text-xs font-bold text-indigo-600">{u.total_poin} Poin</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </>
+                            )}
+                        </div>
                     </div>
-                </div>
-            );
+                );
             case 'profil': return (
                 <div className="glass-card rounded-2xl p-8 animate-fade-in max-w-2xl mx-auto relative overflow-hidden">
                     <div className="absolute top-0 right-0 p-8 opacity-5"><User size={120} className="text-indigo-600" /></div>
@@ -409,12 +573,15 @@ const DashboardGuru = ({
                                 { label: 'Sudah Diverifikasi', value: totalVerified, icon: CheckCircle, color: 'green' },
                                 { label: 'Belum Diverifikasi', value: totalPending, icon: AlertCircle, color: 'orange' },
                                 { label: 'Total Laporan', value: laporan.length, icon: BookOpen, color: 'purple' }
-                            ].map((stat, idx) => (
-                                <div key={idx} className="glass-card p-6 rounded-2xl flex items-center gap-5 hover:transform hover:-translate-y-1 transition-all group">
-                                    <div className={`p-4 rounded-2xl bg-${stat.color}-100 text-${stat.color}-600 shadow-sm group-hover:scale-110 transition-transform`}><stat.icon className="w-8 h-8" /></div>
-                                    <div><p className="text-gray-500 text-sm font-bold mb-1">{stat.label}</p><h3 className="text-3xl font-extrabold text-gray-800">{stat.value}</h3></div>
-                                </div>
-                            ))}
+                            ].map((stat, idx) => {
+                                const theme = THEME_COLORS[stat.color];
+                                return (
+                                    <div key={idx} className="glass-card p-6 rounded-2xl flex items-center gap-5 hover:transform hover:-translate-y-1 transition-all group">
+                                        <div className={`p-4 rounded-2xl ${theme.bg} ${theme.text} shadow-sm group-hover:scale-110 transition-transform`}><stat.icon className="w-8 h-8" /></div>
+                                        <div><p className="text-gray-500 text-sm font-bold mb-1">{stat.label}</p><h3 className="text-3xl font-extrabold text-gray-800">{stat.value}</h3></div>
+                                    </div>
+                                );
+                            })}
                         </div>
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-96">
                             <SimpleBarChart data={classData} title={`Minat Baca per Kelas (${displayTahunAjaran})`} color="bg-indigo-500" />
@@ -430,13 +597,16 @@ const DashboardGuru = ({
                                     { id: 'leaderboard', label: 'Peringkat', icon: Trophy, color: 'amber' },
                                     { id: 'sekolah', label: 'Data Sekolah', icon: School, color: 'rose' },
                                     { id: 'kelas', label: 'Data Kelas', icon: Layout, color: 'cyan' }
-                                ].map((item) => (
-                                    <button key={item.id} onClick={() => setView(item.id)} className={`p-5 rounded-2xl bg-${item.color}-50 hover:bg-${item.color}-100 text-${item.color}-700 transition-all transform hover:-translate-y-2 hover:shadow-lg flex flex-col items-center gap-3 group border border-${item.color}-100 relative overflow-hidden`}>
-                                        <div className={`absolute top-0 right-0 p-8 bg-${item.color}-200 rounded-bl-full opacity-20 group-hover:scale-150 transition-transform duration-500`}></div>
-                                        <div className={`p-3.5 bg-${item.color}-200 rounded-xl text-${item.color}-700 group-hover:scale-110 transition-transform shadow-sm relative z-10`}><item.icon size={28} /></div>
-                                        <span className="font-bold text-sm relative z-10">{item.label}</span>
-                                    </button>
-                                ))}
+                                ].map((item) => {
+                                    const theme = THEME_COLORS[item.color];
+                                    return (
+                                        <button key={item.id} onClick={() => setView(item.id)} className={`p-5 rounded-2xl ${theme.soft} ${theme.hover} ${theme.dark} transition-all transform hover:-translate-y-2 hover:shadow-lg flex flex-col items-center gap-3 group border ${theme.border} relative overflow-hidden`}>
+                                            <div className={`absolute top-0 right-0 p-8 ${theme.icon} rounded-bl-full opacity-20 group-hover:scale-150 transition-transform duration-500`}></div>
+                                            <div className={`p-3.5 ${theme.icon} rounded-xl ${theme.dark} group-hover:scale-110 transition-transform shadow-sm relative z-10`}><item.icon size={28} /></div>
+                                            <span className="font-bold text-sm relative z-10">{item.label}</span>
+                                        </button>
+                                    );
+                                })}
                             </div>
                         </div>
                     </div>
