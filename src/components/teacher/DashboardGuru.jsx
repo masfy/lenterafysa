@@ -308,12 +308,24 @@ const DashboardGuru = ({
                     <style>{`
                         @media print {
                             @page {
-                                size: A4 portrait;
-                                margin: 2cm;
+                                size: A4 landscape;
+                                margin: 1.5cm;
                             }
-                            body {
-                                background: white;
-                                -webkit-print-color-adjust: exact;
+                            body, html, #root {
+                                height: auto !important;
+                                overflow: visible !important;
+                            }
+                            /* Reset main layout containers */
+                            .h-screen {
+                                height: auto !important;
+                                overflow: visible !important;
+                            }
+                            .overflow-y-auto {
+                                overflow: visible !important;
+                                height: auto !important;
+                            }
+                            .overflow-hidden {
+                                overflow: visible !important;
                             }
                             .no-print {
                                 display: none !important;
@@ -335,12 +347,15 @@ const DashboardGuru = ({
                             table {
                                 width: 100% !important;
                                 border-collapse: collapse !important;
+                                table-layout: fixed !important; /* Ensure table respects width */
                             }
                             th, td {
                                 border: 1px solid black !important;
                                 padding: 8px !important;
-                                font-size: 12px !important;
+                                font-size: 12px !important; /* Increased font size for landscape */
                                 color: black !important;
+                                word-wrap: break-word !important; /* Force word wrap */
+                                white-space: normal !important; /* Allow wrapping */
                             }
                             thead {
                                 display: table-header-group;
@@ -351,11 +366,13 @@ const DashboardGuru = ({
                             .signature-block {
                                 page-break-inside: avoid;
                                 margin-top: 30px;
+                                color: black !important;
+                                display: block !important;
+                                visibility: visible !important;
                             }
                             /* Hide the original header row border to avoid double borders with the title row */
                             thead tr:first-child th {
                                 border: none !important;
-                                border-bottom: 1px solid black !important;
                             }
                         }
                     `}</style>
@@ -403,13 +420,13 @@ const DashboardGuru = ({
                                         </th>
                                     </tr>
                                     <tr className="border-b border-gray-100">
-                                        <th className="p-4 w-12">No</th>
-                                        <th className="p-4">Tanggal</th>
-                                        <th className="p-4">Siswa</th>
-                                        <th className="p-4">Kelas</th>
-                                        <th className="p-4">Judul Buku</th>
+                                        <th className="p-4 w-10">No</th>
+                                        <th className="p-4 w-24">Tanggal</th>
+                                        <th className="p-4 w-32">Siswa</th>
+                                        <th className="p-4 w-16">Kelas</th>
+                                        <th className="p-4 w-40">Judul Buku</th>
                                         <th className="p-4">Ringkasan</th>
-                                        <th className="p-4">Status</th>
+                                        <th className="p-4 w-24">Status</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-100/50">
@@ -420,13 +437,17 @@ const DashboardGuru = ({
 
                                         return (
                                             <tr key={idx} className="hover:bg-violet-50/30">
-                                                <td className="p-4 text-gray-500 font-medium text-center">{idx + 1}</td>
-                                                <td className="p-4 text-gray-600 font-medium whitespace-nowrap">{formattedDate}</td>
-                                                <td className="p-4 font-bold text-gray-800 whitespace-nowrap">{student?.nama_lengkap}</td>
-                                                <td className="p-4 text-center text-gray-500 whitespace-nowrap">{student?.kelas}</td>
-                                                <td className="p-4 text-gray-700 min-w-[150px] font-medium">{l.judul_buku}</td>
-                                                <td className="p-4 text-gray-600 min-w-[200px] text-xs line-clamp-2 print:line-clamp-none">{l.ringkasan}</td>
-                                                <td className="p-4 whitespace-nowrap"><span className={`px-3 py-1 rounded-full text-xs font-bold ${l.status === 'Disetujui' ? 'bg-green-100 text-green-700' : l.status === 'Ditolak' ? 'bg-red-100 text-red-700' : 'bg-orange-100 text-orange-700'} print:bg-transparent print:text-black print:border print:border-black`}>{l.status}</span></td>
+                                                <td className="p-4 text-gray-500 font-medium text-center align-top">{idx + 1}</td>
+                                                <td className="p-4 text-gray-600 font-medium whitespace-nowrap align-top">{formattedDate}</td>
+                                                <td className="p-4 font-bold text-gray-800 align-top">{student?.nama_lengkap}</td>
+                                                <td className="p-4 text-center text-gray-500 whitespace-nowrap align-top">{student?.kelas}</td>
+                                                <td className="p-4 text-gray-700 font-medium align-top">{l.judul_buku}</td>
+                                                <td className="p-4 text-gray-600 text-xs align-top">
+                                                    <div className="line-clamp-2 print:line-clamp-none print:block print:overflow-visible">
+                                                        {l.ringkasan}
+                                                    </div>
+                                                </td>
+                                                <td className="p-4 whitespace-nowrap align-top"><span className={`px-3 py-1 rounded-full text-xs font-bold ${l.status === 'Disetujui' ? 'bg-green-100 text-green-700' : l.status === 'Ditolak' ? 'bg-red-100 text-red-700' : 'bg-orange-100 text-orange-700'} print:bg-transparent print:text-black print:border print:border-black`}>{l.status}</span></td>
                                             </tr>
                                         )
                                     }) : <tr><td colSpan="7" className="p-12 text-center text-gray-400 font-medium">Tidak ada data.</td></tr>}
