@@ -304,16 +304,67 @@ const DashboardGuru = ({
             );
             case 'rekap': return (
                 <div className="space-y-6 animate-fade-in">
+                    {/* Print Styles */}
+                    <style>{`
+                        @media print {
+                            @page {
+                                size: A4 portrait;
+                                margin: 2cm;
+                            }
+                            body {
+                                background: white;
+                                -webkit-print-color-adjust: exact;
+                            }
+                            .no-print {
+                                display: none !important;
+                            }
+                            .print-only {
+                                display: block !important;
+                            }
+                            .glass-card {
+                                box-shadow: none !important;
+                                border: none !important;
+                                background: white !important;
+                                padding: 0 !important;
+                                margin: 0 !important;
+                                overflow: visible !important;
+                            }
+                            .overflow-x-auto {
+                                overflow: visible !important;
+                            }
+                            table {
+                                width: 100% !important;
+                                border-collapse: collapse !important;
+                            }
+                            th, td {
+                                border: 1px solid black !important;
+                                padding: 8px !important;
+                                font-size: 12px !important;
+                                color: black !important;
+                            }
+                            thead {
+                                display: table-header-group;
+                            }
+                            tr {
+                                page-break-inside: avoid;
+                            }
+                            .signature-block {
+                                page-break-inside: avoid;
+                                margin-top: 30px;
+                            }
+                            /* Hide the original header row border to avoid double borders with the title row */
+                            thead tr:first-child th {
+                                border: none !important;
+                                border-bottom: 1px solid black !important;
+                            }
+                        }
+                    `}</style>
+
                     <div className="glass-card rounded-2xl p-8 relative overflow-hidden">
                         <div className="absolute top-0 right-0 p-8 opacity-5 no-print"><FileText size={120} className="text-violet-600" /></div>
                         <h2 className="text-3xl font-bold mb-8 flex items-center gap-3 text-gray-800 relative z-10 no-print">
                             <div className="p-3 bg-violet-100 rounded-xl text-violet-600 shadow-sm"><FileText size={24} /></div> Rekap Laporan
                         </h2>
-
-                        <div className="print-only text-center mb-8 hidden">
-                            <h1 className="text-2xl font-bold uppercase mb-2 print-title">Laporan Literasi {filterTipe}</h1>
-                            <p className="text-lg print-subtitle">Periode: {filterTipe === 'Bulanan' ? new Date(tahunLaporan, bulanLaporan).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' }) : tahunLaporan}</p>
-                        </div>
 
                         <div className="flex flex-wrap gap-4 mb-8 items-end relative z-10 no-print">
                             <div>
@@ -343,6 +394,14 @@ const DashboardGuru = ({
                         <div className="overflow-x-auto rounded-xl border border-gray-100/50 relative z-10">
                             <table className="w-full text-left text-sm border-collapse min-w-[600px]">
                                 <thead className="bg-gray-50/50 text-gray-500 uppercase tracking-wider text-xs">
+                                    {/* Title Row for Print - Inside thead to repeat on pages */}
+                                    <tr className="hidden print:table-row border-none">
+                                        <th colSpan="7" className="p-4 text-center border-none">
+                                            <h1 className="text-2xl font-bold uppercase mb-1 text-black">Laporan Literasi {filterTipe}</h1>
+                                            <p className="text-lg font-normal text-black">Periode: {filterTipe === 'Bulanan' ? new Date(tahunLaporan, bulanLaporan).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' }) : tahunLaporan}</p>
+                                            <p className="text-sm font-normal text-black mt-1">{dataSekolah.nama}</p>
+                                        </th>
+                                    </tr>
                                     <tr className="border-b border-gray-100">
                                         <th className="p-4 w-12">No</th>
                                         <th className="p-4">Tanggal</th>
@@ -367,7 +426,7 @@ const DashboardGuru = ({
                                                 <td className="p-4 text-center text-gray-500 whitespace-nowrap">{student?.kelas}</td>
                                                 <td className="p-4 text-gray-700 min-w-[150px] font-medium">{l.judul_buku}</td>
                                                 <td className="p-4 text-gray-600 min-w-[200px] text-xs line-clamp-2 print:line-clamp-none">{l.ringkasan}</td>
-                                                <td className="p-4 whitespace-nowrap"><span className={`px-3 py-1 rounded-full text-xs font-bold ${l.status === 'Disetujui' ? 'bg-green-100 text-green-700' : l.status === 'Ditolak' ? 'bg-red-100 text-red-700' : 'bg-orange-100 text-orange-700'}`}>{l.status}</span></td>
+                                                <td className="p-4 whitespace-nowrap"><span className={`px-3 py-1 rounded-full text-xs font-bold ${l.status === 'Disetujui' ? 'bg-green-100 text-green-700' : l.status === 'Ditolak' ? 'bg-red-100 text-red-700' : 'bg-orange-100 text-orange-700'} print:bg-transparent print:text-black print:border print:border-black`}>{l.status}</span></td>
                                             </tr>
                                         )
                                     }) : <tr><td colSpan="7" className="p-12 text-center text-gray-400 font-medium">Tidak ada data.</td></tr>}
@@ -379,12 +438,12 @@ const DashboardGuru = ({
                         <div className="flex justify-between">
                             <div className="text-center">
                                 <p className="mb-20">Mengetahui,<br />Kepala Sekolah</p>
-                                <p className="font-bold">{dataSekolah.kepala_sekolah || '.........................'}</p>
+                                <p className="font-bold underline">{dataSekolah.kepala_sekolah || '.........................'}</p>
                                 <p>NIP. {dataSekolah.nip_kepala_sekolah || '.........................'}</p>
                             </div>
                             <div className="text-center">
                                 <p className="mb-20">{dataSekolah.kota ? `${dataSekolah.kota}, ` : ''}{new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}<br />Guru</p>
-                                <p className="font-bold">{currentUser.nama_lengkap}</p>
+                                <p className="font-bold underline">{currentUser.nama_lengkap}</p>
                                 <p>NIP. {currentUser.nip || '.........................'}</p>
                             </div>
                         </div>
