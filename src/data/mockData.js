@@ -5,6 +5,7 @@ export const PENGGUNA_AWAL = [
         password: "123",
         role: "guru",
         nama_lengkap: "Pak Budi",
+        nip: "19850101 201001 1 001",
         foto_url: "",
         kelas: "-",
         total_poin: 0,
@@ -80,7 +81,9 @@ export const DATA_SEKOLAH_AWAL = {
     alamat: "Jl. Pendidikan No. 123, Jakarta",
     akreditasi: "A",
     kepala_sekolah: "Dr. Siti Aminah",
-    tahun_ajaran: "2024/2025"
+    nip_kepala_sekolah: "19700101 199501 2 001",
+    tahun_ajaran: "2024/2025",
+    kota: "Jakarta"
 };
 
 export const DATA_KELAS_AWAL = [
