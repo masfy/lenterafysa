@@ -558,16 +558,39 @@ const DashboardGuru = ({
                                             <td className="p-4 text-gray-500 max-w-xs truncate">{lap.ringkasan}</td>
                                             <td className="p-4 text-gray-500">{lap.tanggal_kirim}</td>
                                             <td className="p-4 text-right">
-                                                <div className="flex justify-end gap-2">
-                                                    <button onClick={() => onVerify(lap.report_id, true)} className="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200"><CheckCircle className="w-5 h-5" /></button>
-                                                    <button onClick={() => { setRejectingId(lap.report_id); setRejectionNote(''); }} className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200"><XCircle className="w-5 h-5" /></button>
-                                                </div>
-                                                {rejectingId === lap.report_id && (
-                                                    <div className="mt-2 p-3 bg-red-50 rounded-xl border border-red-100 animate-fade-in text-left">
-                                                        <textarea value={rejectionNote} onChange={(e) => setRejectionNote(e.target.value)} placeholder="Alasan penolakan..." className="w-full p-2 border border-red-200 rounded-lg text-sm outline-none mb-2 bg-white" rows="2" />
-                                                        <div className="flex gap-2 justify-end"><button onClick={() => setRejectingId(null)} className="px-3 py-1 text-xs font-bold text-gray-500 hover:bg-gray-100 rounded-lg">Batal</button><button onClick={() => { onVerify(lap.report_id, false, rejectionNote); setRejectingId(null); }} className="px-3 py-1 text-xs font-bold bg-red-600 text-white rounded-lg hover:bg-red-700">Kirim Penolakan</button></div>
+                                                <div className="flex flex-col gap-2">
+                                                    <div className="flex justify-end gap-2">
+                                                        <button onClick={() => {
+                                                            if (rejectingId === lap.report_id) {
+                                                                // If already open, approve with note
+                                                                onVerify(lap.report_id, true, rejectionNote);
+                                                                setRejectingId(null);
+                                                            } else {
+                                                                // Open note input
+                                                                setRejectingId(lap.report_id);
+                                                                setRejectionNote(lap.feedback_guru || '');
+                                                            }
+                                                        }} className={`p-2 rounded-lg transition-colors ${rejectingId === lap.report_id ? 'bg-green-600 text-white hover:bg-green-700' : 'bg-green-100 text-green-600 hover:bg-green-200'}`} title={rejectingId === lap.report_id ? "Kirim Penilaian" : "Beri Nilai"}>
+                                                            <CheckCircle className="w-5 h-5" />
+                                                        </button>
+                                                        {rejectingId !== lap.report_id && (
+                                                            <button onClick={() => { setRejectingId(lap.report_id); setRejectionNote(''); }} className="p-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200" title="Tulis Catatan">
+                                                                <Edit className="w-5 h-5" />
+                                                            </button>
+                                                        )}
                                                     </div>
-                                                )}
+                                                    {rejectingId === lap.report_id && (
+                                                        <div className="mt-2 p-3 bg-white rounded-xl border border-indigo-100 shadow-lg animate-fade-in text-left relative z-20 w-64 ml-auto">
+                                                            <label className="text-xs font-bold text-gray-500 mb-1 block">Catatan untuk Siswa (Opsional):</label>
+                                                            <textarea value={rejectionNote} onChange={(e) => setRejectionNote(e.target.value)} placeholder="Berikan semangat atau masukan..." className="w-full p-2 border border-gray-200 rounded-lg text-sm outline-none mb-2 bg-gray-50 focus:bg-white transition-colors" rows="3" />
+                                                            <div className="flex gap-2 justify-end">
+                                                                <button onClick={() => setRejectingId(null)} className="px-3 py-1.5 text-xs font-bold text-gray-500 hover:bg-gray-100 rounded-lg">Batal</button>
+                                                                <button onClick={() => { onVerify(lap.report_id, false, rejectionNote); setRejectingId(null); }} className="px-3 py-1.5 text-xs font-bold bg-red-100 text-red-600 hover:bg-red-200 rounded-lg">Tolak</button>
+                                                                <button onClick={() => { onVerify(lap.report_id, true, rejectionNote); setRejectingId(null); }} className="px-3 py-1.5 text-xs font-bold bg-green-600 text-white hover:bg-green-700 rounded-lg shadow-sm">Setujui</button>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
                                             </td>
                                         </tr>
                                     ))
