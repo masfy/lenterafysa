@@ -2,7 +2,7 @@ import React from 'react';
 import { FileText, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import StudentHeader from './StudentHeader';
 
-export default function PustakaSiswa({ laporan }) {
+export default function PustakaSiswa({ laporan, onEdit }) {
   // Sort laporan by date (newest first)
   const sortedLaporan = [...laporan].sort((a, b) => new Date(b.tanggal_kirim) - new Date(a.tanggal_kirim));
 
@@ -58,12 +58,22 @@ export default function PustakaSiswa({ laporan }) {
                   <div className="mt-0.5 text-indigo-500">
                     <AlertCircle size={16} />
                   </div>
-                  <div>
+                  <div className="flex-1">
                     <p className="text-xs font-bold text-gray-500 uppercase mb-0.5">Catatan Guru</p>
                     <p className="text-sm text-gray-700 font-medium">{lap.feedback_guru}</p>
                   </div>
                 </div>
               )}
+
+              <div className="mt-4 pt-3 border-t border-gray-50 flex justify-end relative z-20">
+                <button
+                  onClick={() => onEdit(lap)}
+                  className="px-4 py-2 bg-indigo-50 text-indigo-600 rounded-xl text-sm font-bold hover:bg-indigo-100 transition-colors flex items-center gap-2"
+                >
+                  <FileText size={16} />
+                  Perbaiki Laporan
+                </button>
+              </div>
 
               <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-indigo-50 to-transparent rounded-bl-full -mr-12 -mt-12 opacity-50 group-hover:scale-110 transition-transform duration-500"></div>
             </div>
