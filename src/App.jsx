@@ -145,7 +145,7 @@ export default function LenteraApp() {
       judul_buku: data.judul,
       ringkasan: data.ringkasan,
       status: "Menunggu", // Reset status
-      feedback_guru: "" // Clear feedback
+      // feedback_guru: "" // Keep feedback so student can see what they addressed
     };
 
     // Optimistic Update
@@ -182,6 +182,8 @@ export default function LenteraApp() {
 
   const tanganiVerifikasi = async (reportId, isApproved, catatan = "") => {
     const status = isApproved ? 'Disetujui' : 'Ditolak';
+    const previousReport = laporan.find(r => r.report_id === reportId);
+    const wasAlreadyApproved = previousReport?.status === 'Disetujui';
 
     // Optimistic Update
     const laporanTerupdate = laporan.map(r => {
@@ -190,8 +192,8 @@ export default function LenteraApp() {
     });
     setLaporan(laporanTerupdate);
 
-    // Update User Points if Approved
-    if (isApproved) {
+    // Update User Points if Approved AND it wasn't already approved before
+    if (isApproved && !wasAlreadyApproved) {
       const lap = laporan.find(r => r.report_id === reportId);
       if (lap) {
         const student = users.find(u => u.uid === lap.student_uid);
