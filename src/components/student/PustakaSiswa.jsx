@@ -65,15 +65,17 @@ export default function PustakaSiswa({ laporan, onEdit }) {
                 </div>
               )}
 
-              <div className="mt-4 pt-3 border-t border-gray-50 flex justify-end relative z-20">
-                <button
-                  onClick={() => onEdit(lap)}
-                  className="px-4 py-2 bg-indigo-50 text-indigo-600 rounded-xl text-sm font-bold hover:bg-indigo-100 transition-colors flex items-center gap-2"
-                >
-                  <FileText size={16} />
-                  Perbaiki Laporan
-                </button>
-              </div>
+              {(lap.status === 'Ditolak' || (lap.status === 'Disetujui' && lap.feedback_guru)) && (
+                <div className="mt-4 pt-3 border-t border-gray-50 flex justify-end relative z-20">
+                  <button
+                    onClick={() => onEdit(lap)}
+                    className="px-4 py-2 bg-indigo-50 text-indigo-600 rounded-xl text-sm font-bold hover:bg-indigo-100 transition-colors flex items-center gap-2"
+                  >
+                    <FileText size={16} />
+                    Perbaiki Laporan
+                  </button>
+                </div>
+              )}
 
               <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-indigo-50 to-transparent rounded-bl-full -mr-12 -mt-12 opacity-50 group-hover:scale-110 transition-transform duration-500"></div>
             </div>
