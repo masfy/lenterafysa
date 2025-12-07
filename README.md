@@ -59,7 +59,7 @@ Aplikasi ini menggunakan *mock data* untuk demonstrasi. Anda bisa login mengguna
     *   Jika bagus: Klik **Setujui** (bisa tambah catatan). Siswa dapat poin (+10 XP).
     *   Jika kurang: Klik **Tolak** atau beri catatan revisi. Status menjadi **"Ditolak"** atau tetap **"Menunggu"** (jika hanya revisi).
 5.  **Siswa** melihat notifikasi dan feedback di menu **Pustaka**.
-6.  Jika perlu revisi, siswa klik **"Perbaiki Laporan"**, edit, dan kirim ulang.
+6.  Jika laporan **Ditolak** atau **Disetujui dengan Catatan**, tombol **"Perbaiki Laporan"** akan muncul. Siswa dapat mengklik tombol tersebut, memperbaiki laporan, dan mengirim ulang. Laporan yang disetujui tanpa catatan tidak dapat diedit kembali.
 7.  Guru memverifikasi ulang. Poin hanya diberikan satu kali per laporan (tidak ada duplikasi poin untuk edit laporan yang sudah disetujui).
 
 ---
